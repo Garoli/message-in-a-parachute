@@ -1,0 +1,41 @@
+#include "colorbutton.h"
+
+ColorButton::ColorButton(QWidget *parent) :
+    QPushButton(parent)
+{
+    this->setMinimumWidth(50);
+    currentColor = Qt::black;
+    connect(this, SIGNAL(clicked()), this, SLOT(chooseColor()));
+}
+
+QColor ColorButton::getColor()
+{
+    return currentColor;
+}
+
+void ColorButton::changeColor(const QColor & color)
+{
+    currentColor = color;
+    colorChanged(currentColor);
+}
+
+void ColorButton::chooseColor()
+{
+    QColor color = QColorDialog::getColor(currentColor, this);
+    if (color.isValid())
+        changeColor(color);
+}
+
+void ColorButton::paintEvent(QPaintEvent *event)
+{
+    QPushButton::paintEvent(event);
+
+    int colorPadding = 5;
+
+    QRect rect = event->rect();
+    QPainter painter( this );
+    painter.setBrush( QBrush( currentColor ) );
+    painter.setPen("#CECECE");
+    rect.adjust(colorPadding, colorPadding, -1-colorPadding, -1-colorPadding);
+    painter.drawRect(rect);
+}
